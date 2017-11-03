@@ -1,17 +1,35 @@
+# -*- coding:utf-8 -*-
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
 
-img = cv2.imread('digits.png')
-gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+margin = 3 # 罫線分のピクセル数
 
-# Now we split the image to 5000 cells, each 20x20 size
-cells = [np.hsplit(row,100) for row in np.vsplit(gray,50)]
+
+for i in range(1):
+    img = cv2.imread('./samples/test5-{0:05d}.jpg'.format(i), 0)
+    img = img[10:115, 865:915]
+    # cv2.imwrite("hoge.png", img)
+    # Now we split the image to 3 cells, each 20x20 size
+    cells = [cv2.resize(v[margin:-margin,:], (20, 20)) for v in np.vsplit(img,3)]
+    # print len(cells)
+
+    # cells = [np.hsplit(row,100) for row in np.vsplit(img,50)]
+    ### ガウスブラー
+    # cells = map(lambda x:cv2.GaussianBlur(x,(5,5),0), cells)
+    ### 大津の2値化
+    cells = map(lambda x:cv2.threshold(x, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1], cells)
+    ### 白黒反転
+    cells = map(lambda x:cv2.bitwise_not(x), cells)
+    cv2.imwrite('hoge0.png', cells[0])
+    cv2.imwrite('hoge1.png', cells[1])
+    cv2.imwrite('hoge2.png', cells[2])
+quit()
 
 # Make it into a Numpy array. It size will be (50,100,20,20)
 x = np.array(cells)
 
-# Now we prepare train_data and test_data.
+# Now we prepare test_data.
 test = x[:,50:100].reshape(-1,400).astype(np.float32) # Size = (2500,400)
 # Create labels for train and test data
 k = np.arange(10)

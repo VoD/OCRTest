@@ -12,13 +12,11 @@ cells = [np.hsplit(row,100) for row in np.vsplit(gray,50)]
 x = np.array(cells)
 
 # Now we prepare train_data and test_data.
-train = x[:,:50].reshape(-1,400).astype(np.float32) # Size = (2500,400)
-test = x[:,50:100].reshape(-1,400).astype(np.float32) # Size = (2500,400)
+train = x[:,:100].reshape(-1,400).astype(np.float32) # Size = (2500,400)
 
 # Create labels for train and test data
 k = np.arange(10)
 train_labels = np.repeat(k,250)[:,np.newaxis]
-test_labels = train_labels.copy()
 
 # save the data
 np.savez('knn_data.npz',train=train, train_labels=train_labels)
