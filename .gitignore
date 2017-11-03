@@ -1,4 +1,9 @@
 .atom_build.json
+*.npz
+*.png
+samples/
+git-clean.rb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
